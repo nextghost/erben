@@ -16,6 +16,7 @@ As the last step, the cleaned text of all pages in each book will be combined to
 
 - Linux/BSD
 - PostgreSQL database
+- ImageMagick
 - PHP 5.3 or newer with the following extensions:
   - curl
   - date
