@@ -25,12 +25,7 @@ require 'lib/init.php';
 function runDbScript(\Common\Database $db, $filename) {
 	echo "Running SQL script $filename\n";
 	$data = file_get_contents($filename);
-	$pdo = $db->connection();
-	$ret = $pdo->exec($data);
-
-	if ($ret === false) {
-		throw new \Common\DbException($pdo->errorInfo());
-	}
+	$db->exec($data);
 }
 
 try {

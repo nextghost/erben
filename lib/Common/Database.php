@@ -43,6 +43,17 @@ class Database {
 		return self::$conn;
 	}
 
+	public function exec($sql) {
+		$db = self::connection();
+		$ret = $db->exec($sql);
+
+		if ($ret === false) {
+			throw new DbException($db->errorInfo());
+		}
+
+		return $ret;
+	}
+
 	public function prepare($sql) {
 		$db = self::connection();
 		$stmt = $db->prepare($sql);
