@@ -32,7 +32,7 @@ As the last step, the cleaned text of all pages in each book will be combined to
 ## Installation instructions
 
 1. Write database connection details into config/config.php.example and rename it to config/config.php
-2. Run install.php from command line
+2. Run install.php on your web server.
 
 ## TODO
 
