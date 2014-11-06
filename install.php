@@ -45,6 +45,8 @@ Options -MultiViews
 RewriteEngine On
 RewriteOptions AllowNoSlash
 RewriteBase $baseurl
+RewriteRule ^css/ - [L]
+RewriteRule ^js/ - [L]
 RewriteRule ^(.*)$ index.php [QSA,END]
 EOF;
 
