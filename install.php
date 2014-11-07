@@ -50,6 +50,17 @@ RewriteRule ^js/ - [L]
 RewriteRule ^(.*)$ index.php [QSA,END]
 EOF;
 
+# Check that required extensions are available (except PCNTL which is CLI-only)
+$req_ext = array('curl', 'date', 'dom', 'libxml', 'pcre', 'PDO', 'pdo_pgsql',
+	'posix', 'xml');
+$missing_ext = array();
+
+foreach ($req_ext as $ext) {
+	if (!extension_loaded($ext)) {
+		$missing_ext[] = $ext;
+	}
+}
+
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
    "http://www.w3.org/TR/html4/strict.dtd">
@@ -61,6 +72,10 @@ EOF;
 <body>
 <?php
 try {
+	if (!empty($missing_ext)) {
+		throw new Exception('Missing required PHP extensions: ' . implode(', ', $missing_ext));
+	}
+
 	$db = new \Common\Database();
 	runDbScript($db, 'db/job.sql');
 	runDbScript($db, 'db/pages.sql');
@@ -77,7 +92,7 @@ try {
 
 	echo "<p><b>Note:</b> If the above link gives you <i>Internal Server Error</i>, check Apache error log. Apache system configuration files may prevent use of some directives in .htaccess files. Disabling mod_dir and mod_negotiation for this directory is necessary to make Erben work. If they cannot be disabled in .htaccess file, you will have to edit the system configuration files.</p>";
 } catch (Exception $e) {
-	echo '<p>Error: ' . htmlspecialchars($e->getMessage()) . '</p>';
+	echo '<p><b>Error:</b> ' . htmlspecialchars($e->getMessage()) . "</p>\n";
 }
 ?>
 </body>
