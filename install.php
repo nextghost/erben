@@ -79,10 +79,6 @@ try {
 	$db = new \Common\Database();
 	runDbScript($db, 'db/job.sql');
 	runDbScript($db, 'db/pages.sql');
-	$params = array('url' => 'http://kramerius.nkp.cz/kramerius/oai',
-		'name' => 'NKP', 'metaformat' => 'mets',
-		'lastcheck' => '2005-01-01');
-	$db->query('INSERT INTO erb_oairepo (url, name, metaformat, lastcheck) VALUES (:url, :name, :metaformat, :lastcheck)', $params);
 
 	if (@file_put_contents('.htaccess', $htaccess) === false) {
 		echo "<p>Could not create .htaccess file in current directory. To complete the installation, you'll have to create the file manually with the following content:</p>\n<pre>" . htmlspecialchars($htaccess) . "</pre>\n<p>Then you can <a href=\"" . htmlspecialchars($baseurl) . "\">continue to Erben</a>.</p>\n";

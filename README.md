@@ -33,6 +33,8 @@ As the last step, the cleaned text of all pages in each book will be combined to
 
 1. Write database connection details into config/config.php.example and rename it to config/config.php
 2. Run install.php on your web server.
+3. (Testing only) Run testjobs.php from command line to register Czech National Library OAI repository in Erben and create small import job.
+4. (Testing only) Run worker.php from command line to execute the job and import a few book titles for testing (metadata only, no page content). The script will return immediately but the job will run in a background process for a few minutes.
 
 ## TODO
 
