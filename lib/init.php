@@ -28,4 +28,9 @@ function autoload($class) {
 	}
 }
 
+function error_handler($errno, $errstr, $file, $line) {
+	throw new \ErrorException($errstr, $errno, 1, $file, $line);
+}
+
 spl_autoload_register('\\Common\\autoload');
+set_error_handler('\\Common\\error_handler');
