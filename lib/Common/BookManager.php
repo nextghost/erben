@@ -45,4 +45,21 @@ class BookManager {
 
 		return $row;
 	}
+
+	/**
+	 * Returns PNG page image data as PDO::PARAM_LOB file handle.
+	 * Returns NULL if the page doesn't exist or has no image data.
+	 */
+	public function pageImage($pageid) {
+		$db = new Database();
+		$params = array('id' => $pageid);
+		$stmt = $db->query('SELECT image FROM erb_page WHERE id = :id', $params);
+		$stmt->bindColumn(1, $data, \PDO::PARAM_LOB);
+
+		if (!$stmt->fetch()) {
+			return null;
+		}
+
+		return $data;
+	}
 }

@@ -17,29 +17,28 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+namespace Page;
 
-if (empty($_GET['id'])) {
-	header('HTTP/1.0 404 Not Found');
-	die();
-}
+class Images extends \Base\Page {
+	public function runWeb(array $params) {
+		if (count($params) != 2 || !isset($params[1])) {
+			self::errorNotFound();
+		}
 
-define('APP_BASEDIR', dirname(__FILE__));
-require 'lib/init.php';
+		$page = intval($params[1]);
 
-try {
-	$db = new \Common\Database();
-	$params = array('id' => $_GET['id']);
-	$stmt = $db->query('SELECT image FROM erb_page WHERE id = :id', $params);
-	$stmt->bindColumn(1, $data, PDO::PARAM_LOB);
+		if ($page != $params[1]) {
+			self::errorNotFound();
+		}
 
-	if (!$stmt->fetch()) {
-		header('HTTP/1.0 404 Not Found');
-		die();
+		$bm = new \Common\BookManager();
+		$fp = $bm->pageImage($page);
+
+		if (is_null($fp)) {
+			self::errorNotFound();
+		}
+
+		header('Content-Type: image/png');
+		fpassthru($fp);
 	}
-} catch (Exception $e) {
-	header('HTTP/1.0 500 Internal Server Error');
-	die();
 }
-
-header('Content-Type: image/png');
-fpassthru($data);
