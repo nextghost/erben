@@ -19,11 +19,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace Common;
 
-class BookManager {
+class BookManager extends \Base\DataManager {
 	public function repoInfo($id) {
-		$db = new Database();
 		$params = array('id' => $id);
-		$stmt = $db->query('SELECT * FROM erb_oairepo WHERE id = :id', $params);
+		$stmt = $this->db->query('SELECT * FROM erb_oairepo WHERE id = :id', $params);
 		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
 
 		if (!$row) {
@@ -34,9 +33,8 @@ class BookManager {
 	}
 
 	public function bookInfo($id) {
-		$db = new Database();
 		$params = array('id' => $id);
-		$stmt = $db->query('SELECT * FROM erb_book WHERE id = :id', $params);
+		$stmt = $this->db->query('SELECT * FROM erb_book WHERE id = :id', $params);
 		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
 
 		if (!$row) {
@@ -51,9 +49,8 @@ class BookManager {
 	 * Returns NULL if the page doesn't exist or has no image data.
 	 */
 	public function pageImage($pageid) {
-		$db = new Database();
 		$params = array('id' => $pageid);
-		$stmt = $db->query('SELECT image FROM erb_page WHERE id = :id', $params);
+		$stmt = $this->db->query('SELECT image FROM erb_page WHERE id = :id', $params);
 		$stmt->bindColumn(1, $data, \PDO::PARAM_LOB);
 
 		if (!$stmt->fetch()) {

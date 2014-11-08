@@ -19,13 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace Common;
 
-class JobManager {
-	protected $db;
-
-	public function __construct(Database $db = null) {
-		$this->db = is_null($db) ? new Database() : $db;
-	}
-
+class JobManager extends \Base\DataManager {
 	protected function insertJob($jobtype, $input) {
 		$params = array('jobtype' => $jobtype,
 			'input' => serialize($input));
