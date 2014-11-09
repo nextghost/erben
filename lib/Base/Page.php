@@ -20,7 +20,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 namespace Base;
 
 abstract class Page {
-	abstract public function runWeb(array $params);
+	private static $urldata = null;
+
+	abstract public function runWeb();
 
 	# FIXME: generate nice error pages using templates
 	public static function errorBadRequest() {
@@ -41,5 +43,17 @@ abstract class Page {
 	public static function errorServerError() {
 		header('HTTP/1.0 500 Internal Server Error');
 		die('500 Internal Server Error');
+	}
+
+	public static function pageUrl() {
+		if (is_null(self::$urldata)) {
+			if (!isset($_SERVER['REDIRECT_URL'])) {
+				throw new \Exception('Erben was not installed correctly. Please contact server administrator.');
+			}
+
+			self::$urldata = new \Common\NiceUrl($_SERVER['REDIRECT_URL']);
+		}
+
+		return self::$urldata;
 	}
 }

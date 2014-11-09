@@ -21,27 +21,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 define('APP_BASEDIR', dirname(__FILE__));
 require 'lib/init.php';
 
-$baseurl = dirname($_SERVER['PHP_SELF']);
-
-if ($baseurl == '.') {
-	$baseurl = '';
-} else if (!empty($baseurl) && substr($baseurl, -1) != '/') {
-	$baseurl .= '/';
+try {
+	$path = \Base\Page::pageUrl();
+	$page = $path->getChunk(0);
+	$page = empty($page) ? 'index' : $page;
+} catch (Exception $e) {
+	die($e->getMessage());
 }
-
-# Check that mod_rewrite is running properly
-if (!isset($_SERVER['REDIRECT_URL'])) {
-	die('Erben was not installed correctly. Please contact server administrator.');
-}
-
-# Something's horribly wrong here
-if (substr($_SERVER['REDIRECT_URL'], 0, strlen($baseurl)) != $baseurl) {
-	\Base\Page::errorServerError();
-}
-
-$suburl = substr($_SERVER['REDIRECT_URL'], strlen($baseurl));
-$path = preg_split('#/#', $suburl);
-$page = empty($path[0]) ? 'index' : $path[0];
 
 try {
 	if (!preg_match('/^[a-z][a-z0-9]*$/i', $page)) {
@@ -56,7 +42,7 @@ try {
 	}
 
 	$inst = new $class();
-	$inst->runWeb($path);
+	$inst->runWeb();
 } catch (Exception $e) {
 	\Base\Page::errorServerError();
 }

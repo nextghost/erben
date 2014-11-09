@@ -20,14 +20,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 namespace Page;
 
 class Images extends \Base\Page {
-	public function runWeb(array $params) {
-		if (count($params) != 2 || !isset($params[1])) {
-			self::errorNotFound();
-		}
+	public function runWeb() {
+		$path = self::pageUrl();
+		$page = $path->getIdInt(1);
 
-		$page = intval($params[1]);
-
-		if ($page != $params[1]) {
+		if ($path->chunkCount() != 2 || is_null($page)) {
 			self::errorNotFound();
 		}
 

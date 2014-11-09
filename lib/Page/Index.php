@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 namespace Page;
 
 class Index extends \Base\Page {
-	public function runWeb(array $params) {
+	public function runWeb() {
 		$tpl = new \Web\Template('index.php');
 		echo $tpl->render();
 	}
