@@ -169,7 +169,9 @@ class NiceUrl {
 				$title = substr($title, 0, $idx);
 			}
 
-			$chunk .= '-' . $title;
+			if (!empty($title)) {
+				$chunk .= '-' . $title;
+			}
 		}
 
 		$this->str = null;
