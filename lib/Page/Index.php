@@ -20,7 +20,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 namespace Page;
 
 class Index extends \Base\Page {
+	public static function url() {
+		$url = new \Common\NiceUrl();
+		return $url->getUrl();
+	}
+
 	public function runWeb() {
+		self::checkCanonicalUrl(self::url());
 		$tpl = new \Web\Template('index.php');
 		echo $tpl->render();
 	}
