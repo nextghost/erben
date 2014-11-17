@@ -54,17 +54,18 @@ class NiceUrl {
 	}
 
 	public function parse($strURL) {
-		$prefix = substr($strURL, 0, strlen(self::$base));
-
-		if (substr($prefix, -1) != '/') {
-			$prefix .= '/';
-		}
+		$prefix = substr($strURL, 0, strlen(self::$base) - 1) . '/';
 
 		if ($prefix != self::$base) {
 			throw new \Exception('NiceUrl::parse(): Cannot parse URL that doesn\'t belong to Erben');
 		}
 
-		$suburl = substr($strURL, strlen(self::$base));
+		if (self::$base == '/' && substr($strURL, 0, 1) != '/') {
+			$suburl = $strUrl;
+		} else {
+			$suburl = substr($strURL, strlen(self::$base));
+		}
+
 		$path = preg_split('#/#', $suburl);
 		$ids = array();
 
