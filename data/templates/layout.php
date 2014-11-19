@@ -17,17 +17,19 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-namespace Page;
 
-class Index extends \Base\Page {
-	public static function url() {
-		$url = new \Common\NiceUrl();
-		return $url->getUrl();
-	}
-
-	public function runWeb() {
-		self::checkCanonicalUrl(self::url());
-		$tpl = new \Web\Template('index.php');
-		$this->sendHtml($tpl, 'Main Page');
-	}
+if (empty($self) || !$self instanceOf \Web\Template) {
+	throw new Exception('Templates must be called using \\Web\\Template class.');
 }
+?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title><?php echo empty($self->title) ? '' : ($self->title . ' &#8212; '); ?>Erben</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+<?php echo $self->_content; ?>
+</body>
+</html>

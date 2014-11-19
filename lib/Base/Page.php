@@ -77,4 +77,11 @@ abstract class Page {
 			self::redirect($canonUrl, 301);
 		}
 	}
+
+	protected function sendHtml(\Web\Template $content, $title = '') {
+		$layout = new \Web\Template('layout.php');
+		$layout->title = $title;
+		$layout->_content = $content->render();
+		echo $layout->render();
+	}
 }
