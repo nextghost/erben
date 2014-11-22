@@ -26,7 +26,7 @@ class BookManager extends \Base\DataManager {
 		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
 
 		if (!$row) {
-			throw new \Exception("BookManager: Repository $id does not exist");
+			throw new NotFoundException("BookManager: Repository $id does not exist");
 		}
 
 		return $row;
@@ -38,7 +38,7 @@ class BookManager extends \Base\DataManager {
 		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
 
 		if (!$row) {
-			throw new \Exception("BookManager: Book $id does not exist");
+			throw new NotFoundException("BookManager: Book $id does not exist");
 		}
 
 		return $row;
