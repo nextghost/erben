@@ -81,7 +81,7 @@ abstract class Page {
 	protected function sendHtml(\Web\Template $content, $title = '') {
 		$layout = new \Web\Template('layout.php');
 		$layout->title = $title;
-		$layout->_content = $content->render();
+		$layout->content = $content;
 		echo $layout->render();
 	}
 }

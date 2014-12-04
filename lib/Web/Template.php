@@ -33,9 +33,8 @@ function renderTemplate($templatefilename, Template $self) {
 	}
 }
 
-class Template {
+class Template extends HtmlData {
 	private $tplfile;
-	private $data = array();
 
 	public function __construct($tplname) {
 		$file = APP_BASEDIR . '/data/templates/' . $tplname;
@@ -45,31 +44,6 @@ class Template {
 		}
 
 		$this->tplfile = $file;
-	}
-
-	public function __get($name) {
-		return isset($this->data[$name]) ? $this->data[$name] : '';
-	}
-
-	/**
-	 * If the attribute name starts with underscore, it will be rendered
-	 * without any changes. Anything else will be escaped using
-	 * htmlspecialchars().
-	 */
-	public function __set($name, $value) {
-		if (substr($name, 0, 1) != '_') {
-			$value = htmlspecialchars($value);
-		}
-
-		$this->data[$name] = $value;
-	}
-
-	public function __isset($name) {
-		return isset($this->data[$name]);
-	}
-
-	public function __unset($name) {
-		unset($this->data[$name]);
 	}
 
 	public function render() {
