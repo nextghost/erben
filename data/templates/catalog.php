@@ -17,21 +17,28 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-namespace Common;
 
-function autoload($class) {
-	$tokens = explode('\\', $class);
-	$path = APP_BASEDIR . '/lib/' . str_replace('\\', '/', $class) . '.php';
-
-	if (@file_exists($path)) {
-		require_once $path;
-	}
+if (empty($self) || !$self instanceOf \Web\Template) {
+	throw new Exception('Templates must be called using \\Web\\Template class.');
 }
 
-function error_handler($errno, $errstr, $file, $line) {
-	throw new \ErrorException($errstr, $errno, 1, $file, $line);
-}
+$firstlink = p('<a href="%s">&laquo; First</a>', $self->firsturl);
+$prevlink = p('<a href="%s">&lt; Previous</a>', $self->prevurl);
+$nextlink = p('<a href="%s">Next &gt;</a>', $self->nexturl);
+$lastlink = p('<a href="%s">Last &raquo;</a>', $self->lasturl);
 
-spl_autoload_register('\\Common\\autoload');
-set_error_handler('\\Common\\error_handler');
-require_once APP_BASEDIR . '/lib/tpltools.php';
+$navfmt = <<<SNIPPET
+$firstlink $prevlink Page %d/%d $nextlink $lastlink
+SNIPPET;
+
+$pagecounter = p(trim($navfmt), $self->pagenum, $self->pagecount);
+?>
+<h1>Book Catalog</h1>
+
+<?php echo $pagecounter; ?>
+
+<div class="catalog">
+<?php echo $self->_list; ?>
+</div>
+
+<?php echo $pagecounter; ?>

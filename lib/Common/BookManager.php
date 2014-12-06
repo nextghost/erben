@@ -44,6 +44,25 @@ class BookManager extends \Base\DataManager {
 		return $row;
 	}
 
+	public function booklist($offset, $limit) {
+		$params = array('offset' => $offset, 'limit' => $limit);
+		$stmt = $this->db->query('SELECT * FROM erb_book ORDER BY title ASC, id ASC LIMIT :limit OFFSET :offset', $params);
+		$ret = array();
+
+		while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+			$ret[] = new \Data\BookInfo($row);
+		}
+
+		return $ret;
+#		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+	}
+
+	public function bookcount() {
+		$stmt = $this->db->query('SELECT count(*) as cnt FROM erb_book');
+		$ret = $stmt->fetch(\PDO::FETCH_ASSOC);
+		return $ret['cnt'];
+	}
+
 	/**
 	 * Returns PNG page image data as PDO::PARAM_LOB file handle.
 	 * Returns NULL if the page doesn't exist or has no image data.

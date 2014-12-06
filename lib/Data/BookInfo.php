@@ -17,21 +17,26 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-namespace Common;
+namespace Data;
 
-function autoload($class) {
-	$tokens = explode('\\', $class);
-	$path = APP_BASEDIR . '/lib/' . str_replace('\\', '/', $class) . '.php';
+class BookInfo extends \Base\StyledObject {
+	public function __construct(array $data) {
+		$keys = array('id', 'title', 'kramerius_id', 'web', 'lang',
+			'srcrepo');
+		parent::__construct($data, $keys);
+	}
 
-	if (@file_exists($path)) {
-		require_once $path;
+	public function htmldata() {
+		$ret = parent::htmldata();
+		$ret->link = \Page\Book::url($this->data['id']);
+		return $ret;
+	}
+
+	protected function style_default(\Web\HtmlData $self) {
+		return <<<SNIPPET
+<div class="booklink">
+<a href="$self->link">$self->title</a>
+</div>
+SNIPPET;
 	}
 }
-
-function error_handler($errno, $errstr, $file, $line) {
-	throw new \ErrorException($errstr, $errno, 1, $file, $line);
-}
-
-spl_autoload_register('\\Common\\autoload');
-set_error_handler('\\Common\\error_handler');
-require_once APP_BASEDIR . '/lib/tpltools.php';
