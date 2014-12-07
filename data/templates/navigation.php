@@ -22,16 +22,7 @@ if (empty($self) || !$self instanceOf \Web\Template) {
 	throw new Exception('Templates must be called using \\Web\\Template class.');
 }
 ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
-   "http://www.w3.org/TR/html4/strict.dtd">
-<html>
-<head>
-<title><?php echo empty($self->title) ? '' : ($self->title . ' &#8212; '); ?>Erben</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-</head>
-<body>
-<?php echo $self->_navigation; ?>
-
-<?php echo $self->_content; ?>
-</body>
-</html>
+<div class="navigation">
+<a href="<?php echo $self->url_index; ?>">Main Page</a>
+<a href="<?php echo $self->url_catalog; ?>">Book Catalog</a>
+</div>

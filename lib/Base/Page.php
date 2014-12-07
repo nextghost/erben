@@ -21,6 +21,7 @@ namespace Base;
 
 abstract class Page {
 	private static $urldata = null;
+	private $navigation = null;
 
 	abstract public function runWeb();
 
@@ -78,9 +79,23 @@ abstract class Page {
 		}
 	}
 
+	protected function navigation() {
+		if (is_null($this->navigation)) {
+			# Prevent exception loop
+			$this->navigation = '';
+			$nav = new \Web\Template('navigation.php');
+			$nav->url_index = \Page\Index::url();
+			$nav->url_catalog = \Page\Catalog::url();
+			$this->navigation = $nav;
+		}
+
+		return $this->navigation;
+	}
+
 	protected function sendHtml(\Web\Template $content, $title = '') {
 		$layout = new \Web\Template('layout.php');
 		$layout->title = $title;
+		$layout->navigation = $this->navigation();
 		$layout->content = $content;
 		echo $layout->render();
 	}
