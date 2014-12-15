@@ -1,0 +1,21 @@
+img.bookpage {
+	border: none;
+	display: inline-block;
+	max-width: 100%;
+	width: auto;
+	height: auto;
+}
+
+table.pageview {
+	width: 100%;
+	table-layout: fixed;
+}
+
+table.pageview td {
+	width: 50%;
+	vertical-align: top;
+}
+
+.center {
+	text-align: center;
+}

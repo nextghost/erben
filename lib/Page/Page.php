@@ -19,38 +19,41 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace Page;
 
-class Book extends \Base\Page {
-	public static function url($bookid) {
+class Page extends \Base\Page {
+	public static function url($pageid) {
 		$man = new \Common\BookManager();
-		$info = $man->bookInfo($bookid);
+		$pinfo = $man->pageInfo($pageid);
+		$binfo = $man->bookInfo($pinfo->book);
 		$url = new \Common\NiceUrl();
-		$url->setChunk(0, 'book');
-		$url->setChunk(1, $bookid, $info['title']);
+		$url->setChunk(0, 'page');
+		$url->setChunk(1, $pageid, $binfo['title']);
 		return $url->getUrl();
 	}
 
 	public function runWeb() {
 		$path = self::pageUrl();
-		$bookid = $path->getIdInt(1);
+		$pageid = $path->getIdInt(1);
 
-		if (is_null($bookid)) {
+		if (is_null($pageid)) {
 			self::errorNotFound();
 		}
 
 		try {
-			$canonurl = self::url($bookid);
+			$canonurl = self::url($pageid);
 			self::checkCanonicalUrl($canonurl);
 			$man = new \Common\BookManager();
-			$info = $man->bookInfo($bookid);
-			$pages = $man->pagelist($bookid);
+			$pinfo = $man->pageInfo($pageid);
+			$binfo = $man->bookInfo($pinfo->book);
+			$content = $man->pageContent($pageid);
 		} catch (\Common\NotFoundException $e) {
 			self::errorNotFound();
 		}
 
-		$tpl = new \Web\Template('book.php');
-		$tpl->title = $info['title'];
-		$tpl->srcurl = $info['web'];
-		$tpl->pages = $pages;
-		$this->sendHtml($tpl, $info['title']);
+		$tpl = new \Web\Template('page.php');
+		$tpl->merge($pinfo->htmldata());
+		$tpl->title = $binfo['title'];
+		$tpl->content = $content;
+		$tpl->imagelink = $pinfo->has_image ? Images::imageUrl($pageid) : null;
+		$this->sendHtml($tpl, $binfo['title']);
 	}
 }

@@ -17,16 +17,26 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+namespace Data;
 
-if (empty($self) || !$self instanceOf \Web\Template) {
-	throw new Exception('Templates must be called using \\Web\\Template class.');
+class PageInfo extends \Base\StyledObject {
+	public function __construct(array $data) {
+		$keys = array('id', 'book', 'page', 'has_image');
+		parent::__construct($data, $keys);
+	}
+
+	public function htmldata() {
+		$ret = parent::htmldata();
+		$ret->link = \Page\Page::url($this->data['id']);
+		$ret->booklink = \Page\Book::url($this->data['book']);
+		return $ret;
+	}
+
+	protected function style_default(\Web\HtmlData $self) {
+		return <<<SNIPPET
+<span class="pagelink">
+<a href="$self->link">$self->page</a>
+</span>
+SNIPPET;
+	}
 }
-?>
-<h1><?php echo $self->title; ?></h1>
-
-<p><a href="<?php echo $self->srcurl; ?>">Source repository</a></p>
-
-<h2>Pages</h2>
-<div class="pagelist">
-<?php echo $self->glue(' ')->_pages; ?>
-</div>

@@ -28,6 +28,7 @@ if (empty($self) || !$self instanceOf \Web\Template) {
 <head>
 <title><?php echo empty($self->title) ? '' : ($self->title . ' &#8212; '); ?>Erben</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="<?php \Common\NiceUrl::printrel('css/style.css'); ?>">
 </head>
 <body>
 <?php echo $self->_navigation; ?>

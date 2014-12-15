@@ -33,6 +33,13 @@ class HtmlData {
 		return $this;
 	}
 
+	public function merge(HtmlData $other) {
+		foreach ($other->data as $key => $val) {
+			$this->data[$key] = $val;
+			unset($this->cache[$key]);
+		}
+	}
+
 	protected function renderItem($item, $escape) {
 		if (is_array($item)) {
 			$ret = '';

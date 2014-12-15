@@ -22,11 +22,19 @@ if (empty($self) || !$self instanceOf \Web\Template) {
 	throw new Exception('Templates must be called using \\Web\\Template class.');
 }
 ?>
-<h1><?php echo $self->title; ?></h1>
+<h1><a href="<?php echo $self->booklink; ?>"><?php echo $self->title; ?></a>, page <?php echo $self->page; ?></h1>
 
-<p><a href="<?php echo $self->srcurl; ?>">Source repository</a></p>
-
-<h2>Pages</h2>
-<div class="pagelist">
-<?php echo $self->glue(' ')->_pages; ?>
-</div>
+<table class="pageview"><tr>
+<td><?php echo nl2br($self->content); ?></td>
+<td class="center">
+<?php
+if ($self->has_image) {
+	echo <<<SNIPPET
+<a href="$self->imagelink"><img class="bookpage" src="$self->imagelink" alt="Scanned page image"/></a>
+SNIPPET;
+} else {
+	echo "Image not available";
+}
+?>
+</td>
+</tr></table>

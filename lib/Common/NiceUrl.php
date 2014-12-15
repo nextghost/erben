@@ -53,6 +53,11 @@ class NiceUrl {
 		self::$base = $base;
 	}
 
+	public static function printrel($path) {
+		self::genbase();
+		echo htmlspecialchars(self::$base . $path);
+	}
+
 	public function parse($strURL) {
 		$prefix = substr($strURL, 0, strlen(self::$base) - 1) . '/';
 

@@ -54,13 +54,48 @@ class BookManager extends \Base\DataManager {
 		}
 
 		return $ret;
-#		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
 
 	public function bookcount() {
 		$stmt = $this->db->query('SELECT count(*) as cnt FROM erb_book');
 		$ret = $stmt->fetch(\PDO::FETCH_ASSOC);
 		return $ret['cnt'];
+	}
+
+	public function pagelist($book) {
+		$params = array('book' => $book);
+		$stmt = $this->db->query('SELECT id, book, page, image IS NOT NULL AS has_image FROM erb_page WHERE book = :book ORDER BY page ASC', $params);
+		$ret = array();
+
+		while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+			$ret[] = new \Data\PageInfo($row);
+		}
+
+		return $ret;
+	}
+
+	public function pageInfo($id) {
+		$params = array('id' => $id);
+		$stmt = $this->db->query('SELECT id, book, page, image IS NOT NULL AS has_image FROM erb_page WHERE id = :id', $params);
+		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+		if (!$row) {
+			throw new NotFoundException("BookManager: Page $id does not exist");
+		}
+
+		return new \Data\PageInfo($row);
+	}
+
+	public function pageContent($pageid) {
+		$params = array('id' => $pageid);
+		$stmt = $this->db->query('SELECT content FROM erb_page WHERE id = :id', $params);
+		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+		if (!$row) {
+			throw new NotFoundException("BookManager: Page $id does not exist");
+		}
+
+		return $row['content'];
 	}
 
 	/**
