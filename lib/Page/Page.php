@@ -26,7 +26,7 @@ class Page extends \Base\Page {
 		$binfo = $man->bookInfo($pinfo->book);
 		$url = new \Common\NiceUrl();
 		$url->setChunk(0, 'page');
-		$url->setChunk(1, $pageid, $binfo['title']);
+		$url->setChunk(1, $pageid, $binfo->title);
 		return $url->getUrl();
 	}
 
@@ -51,9 +51,9 @@ class Page extends \Base\Page {
 
 		$tpl = new \Web\Template('page.php');
 		$tpl->merge($pinfo->htmldata());
-		$tpl->title = $binfo['title'];
+		$tpl->title = $binfo->title;
 		$tpl->content = $content;
 		$tpl->imagelink = $pinfo->has_image ? Images::imageUrl($pageid) : null;
-		$this->sendHtml($tpl, $binfo['title']);
+		$this->sendHtml($tpl, $binfo->title);
 	}
 }

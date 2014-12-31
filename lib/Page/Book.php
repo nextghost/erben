@@ -25,7 +25,7 @@ class Book extends \Base\Page {
 		$info = $man->bookInfo($bookid);
 		$url = new \Common\NiceUrl();
 		$url->setChunk(0, 'book');
-		$url->setChunk(1, $bookid, $info['title']);
+		$url->setChunk(1, $bookid, $info->title);
 		return $url->getUrl();
 	}
 
@@ -48,9 +48,8 @@ class Book extends \Base\Page {
 		}
 
 		$tpl = new \Web\Template('book.php');
-		$tpl->title = $info['title'];
-		$tpl->srcurl = $info['web'];
+		$tpl->merge($info->htmldata());
 		$tpl->pages = $pages;
-		$this->sendHtml($tpl, $info['title']);
+		$this->sendHtml($tpl, $info->title);
 	}
 }

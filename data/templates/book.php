@@ -24,7 +24,7 @@ if (empty($self) || !$self instanceOf \Web\Template) {
 ?>
 <h1><?php echo $self->title; ?></h1>
 
-<p><a href="<?php echo $self->srcurl; ?>">Source repository</a></p>
+<p><a href="<?php echo $self->web; ?>">Source repository</a></p>
 
 <h2>Pages</h2>
 <div class="pagelist">

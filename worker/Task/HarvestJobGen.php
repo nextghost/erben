@@ -32,8 +32,8 @@ class HarvestJobGen extends \Worker\Task {
 		$this->repo = $input['repo'];
 		$bookman = new \Common\BookManager();
 		$reg = $bookman->repoInfo($input['repo']);
-		$this->startdate = $reg['lastcheck'];
-		$repo = new \Common\Oai\Repository($reg['url']);
+		$this->startdate = $reg->lastcheck;
+		$repo = new \Common\Oai\Repository($reg->url);
 		$info = $repo->repoinfo();
 		$tz = new \DateTimeZone('UTC');
 		$dt = new \DateTime($info['repotime'], $tz);

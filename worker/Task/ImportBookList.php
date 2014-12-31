@@ -29,8 +29,8 @@ class ImportBookList extends \Worker\Task {
 
 		$bookman = new \Common\BookManager();
 		$rinfo = $bookman->repoInfo($input['repo']);
-		$repo = new \Common\Oai\Repository($rinfo['url']);
-		$booklist = $repo->listRecords('type:monograph', $rinfo['metaformat'], $input['from'], $input['until']);
+		$repo = new \Common\Oai\Repository($rinfo->url);
+		$booklist = $repo->listRecords('type:monograph', $rinfo->metaformat, $input['from'], $input['until']);
 
 		foreach ($booklist as $id => $book) {
 			$info = $book->info;

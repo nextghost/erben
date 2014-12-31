@@ -29,7 +29,7 @@ class BookManager extends \Base\DataManager {
 			throw new NotFoundException("BookManager: Repository $id does not exist");
 		}
 
-		return $row;
+		return new \Data\RepoInfo($row);
 	}
 
 	public function bookInfo($id) {
@@ -41,7 +41,7 @@ class BookManager extends \Base\DataManager {
 			throw new NotFoundException("BookManager: Book $id does not exist");
 		}
 
-		return $row;
+		return new \Data\BookInfo($row);
 	}
 
 	public function booklist($offset, $limit) {

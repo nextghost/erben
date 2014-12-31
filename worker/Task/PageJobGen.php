@@ -34,9 +34,9 @@ class PageJobGen extends \Worker\Task {
 
 		$bookman = new \Common\BookManager();
 		$binfo = $bookman->bookInfo($input['book']);
-		$rinfo = $bookman->repoInfo($binfo['srcrepo']);
-		$repo = new \Common\Oai\Repository($rinfo['url']);
-		$mets = $repo->getRecord($binfo['kramerius_id'], $rinfo['metaformat']);
+		$rinfo = $bookman->repoInfo($binfo->srcrepo);
+		$repo = new \Common\Oai\Repository($rinfo->url);
+		$mets = $repo->getRecord($binfo->kramerius_id, $rinfo->metaformat);
 
 		foreach ($mets->pages as $page) {
 			$type = $page['type'];
