@@ -80,10 +80,14 @@ try {
 	runDbScript($db, 'db/job.sql');
 	runDbScript($db, 'db/pages.sql');
 
-	if (@file_put_contents('.htaccess', $htaccess) === false) {
+	try {
+		if (@file_put_contents('.htaccess', $htaccess) === false) {
+			throw new Exception('Could not create .htacces file');
+		} else {
+			echo "<p>Erben installation successful. You can now <a href=\"" . htmlspecialchars($baseurl) . "\">continue to Erben</a>.</p>\n";
+		}
+	} catch (Exception $e) {
 		echo "<p>Could not create .htaccess file in current directory. To complete the installation, you'll have to create the file manually with the following content:</p>\n<pre>" . htmlspecialchars($htaccess) . "</pre>\n<p>Then you can <a href=\"" . htmlspecialchars($baseurl) . "\">continue to Erben</a>.</p>\n";
-	} else {
-		echo "<p>Erben installation successful. You can now <a href=\"" . htmlspecialchars($baseurl) . "\">continue to Erben</a>.</p>\n";
 	}
 
 	echo "<p><b>Note:</b> If the above link gives you <i>Internal Server Error</i>, check Apache error log. Apache system configuration files may prevent use of some directives in .htaccess files. Disabling mod_dir and mod_negotiation for this directory is necessary to make Erben work. If they cannot be disabled in .htaccess file, you will have to edit the system configuration files.</p>";
