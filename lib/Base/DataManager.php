@@ -20,9 +20,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 namespace Base;
 
 abstract class DataManager {
+	protected static $useCache = true;
 	protected $db;
 
 	public function __construct(\Common\Database $db = null) {
 		$this->db = is_null($db) ? new \Common\Database() : $db;
+	}
+
+	public static function enableCache($value = true) {
+		self::$useCache = $value;
 	}
 }

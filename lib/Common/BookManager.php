@@ -20,7 +20,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 namespace Common;
 
 class BookManager extends \Base\DataManager {
+	protected static $repoCache = array();
+	protected static $bookCache = array();
+	protected static $pageCache = array();
+
 	public function repoInfo($id) {
+		if (self::$useCache && isset(self::$repoCache[$id])) {
+			return self::$repoCache[$id];
+		}
+
 		$params = array('id' => $id);
 		$stmt = $this->db->query('SELECT * FROM erb_oairepo WHERE id = :id', $params);
 		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -29,10 +37,20 @@ class BookManager extends \Base\DataManager {
 			throw new NotFoundException("BookManager: Repository $id does not exist");
 		}
 
-		return new \Data\RepoInfo($row);
+		$ret = new \Data\RepoInfo($row);
+
+		if (self::$useCache) {
+			self::$repoCache[$ret->id] = $ret;
+		}
+
+		return $ret;
 	}
 
 	public function bookInfo($id) {
+		if (self::$useCache && isset(self::$bookCache[$id])) {
+			return self::$bookCache[$id];
+		}
+
 		$params = array('id' => $id);
 		$stmt = $this->db->query('SELECT * FROM erb_book WHERE id = :id', $params);
 		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -41,7 +59,13 @@ class BookManager extends \Base\DataManager {
 			throw new NotFoundException("BookManager: Book $id does not exist");
 		}
 
-		return new \Data\BookInfo($row);
+		$ret = new \Data\BookInfo($row);
+
+		if (self::$useCache) {
+			self::$bookCache[$ret->id] = $ret;
+		}
+
+		return $ret;
 	}
 
 	public function booklist($offset, $limit) {
@@ -50,7 +74,12 @@ class BookManager extends \Base\DataManager {
 		$ret = array();
 
 		while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-			$ret[] = new \Data\BookInfo($row);
+			$tmp = new \Data\BookInfo($row);
+			$ret[] = $tmp;
+
+			if (self::$useCache) {
+				self::$bookCache[$tmp->id] = $tmp;
+			}
 		}
 
 		return $ret;
@@ -68,13 +97,22 @@ class BookManager extends \Base\DataManager {
 		$ret = array();
 
 		while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-			$ret[] = new \Data\PageInfo($row);
+			$tmp = new \Data\PageInfo($row);
+			$ret[] = $tmp;
+
+			if (self::$useCache) {
+				self::$pageCache[$tmp->id] = $tmp;
+			}
 		}
 
 		return $ret;
 	}
 
 	public function pageInfo($id) {
+		if (self::$useCache && isset(self::$pageCache[$id])) {
+			return self::$pageCache[$id];
+		}
+
 		$params = array('id' => $id);
 		$stmt = $this->db->query('SELECT id, book, page, image IS NOT NULL AS has_image FROM erb_page WHERE id = :id', $params);
 		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -83,7 +121,13 @@ class BookManager extends \Base\DataManager {
 			throw new NotFoundException("BookManager: Page $id does not exist");
 		}
 
-		return new \Data\PageInfo($row);
+		$ret = new \Data\PageInfo($row);
+
+		if (self::$useCache) {
+			self::$pageCache[$ret->id] = $ret;
+		}
+
+		return $ret;
 	}
 
 	public function pageContent($pageid) {
