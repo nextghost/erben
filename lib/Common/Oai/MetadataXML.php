@@ -58,4 +58,18 @@ abstract class MetadataXML {
 			throw new \Exception('MetadataXML: Document validation failed');
 		}
 	}
+
+	protected function singleNode(\DOMXPath $xpath, \DOMElement $context, $query) {
+		$list = $xpath->query($query, $context);
+
+		if ($list->length != 1) {
+			throw new \Exception("MetadataXML: Query \"$query\" did not return exactly one node");
+		}
+
+		return $list->item(0);
+	}
+
+	protected function singleVal(\DOMXPath $xpath, \DOMElement $context, $query) {
+		return $this->singleNode($xpath, $context, $query)->nodeValue;
+	}
 }

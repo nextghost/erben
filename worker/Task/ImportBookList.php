@@ -33,11 +33,10 @@ class ImportBookList extends \Worker\Task {
 		$booklist = $repo->listRecords('type:monograph', $rinfo->metaformat, $input['from'], $input['until']);
 
 		foreach ($booklist as $id => $book) {
-			$info = $book->info;
-			$tmp = array('title' => $info->title, 'kramid' => $id,
-				'web' => $info->url, 'lang' => $info->language,
+			$tmp = array('title' => $book->title, 'kramid' => $id,
+				'web' => $book->url, 'lang' => $book->language,
 				'srcrepo' => $input['repo'],
-				'authors' => $info->authors);
+				'authors' => $book->authors);
 			$this->books[] = $tmp;
 		}
 

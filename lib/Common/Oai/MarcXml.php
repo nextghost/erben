@@ -19,22 +19,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace Common\Oai;
 
-class DublinCore extends MetadataXML {
+class MarcXml extends MetadataXML {
 	protected function load(\DOMDocument $doc, \DOMElement $root) {
 		$xpath = new \DOMXPath($doc);
-		$oaiNS = 'http://www.openarchives.org/OAI/2.0/oai_dc/';
-		$xpath->registerNamespace('oai_dc', $oaiNS);
-		$xpath->registerNamespace('dc', 'http://purl.org/dc/elements/1.1/');
+		$marcNS = 'http://www.loc.gov/MARC21/slim';
+		$xpath->registerNamespace('m', $marcNS);
 
-		if ($root->namespaceURI != $oaiNS || $root->localName != 'dc') {
-			throw new \Exception('DublinCore: Root node is not a valid Dublin Core document root');
+		if ($root->namespaceURI != $marcNS || $root->localName != 'collection') {
+			throw new \Exception('MarcXml: Root node is not a valid MARCXML document root');
 		}
 
-		$this->props['title'] = $this->singleVal($xpath, $root, 'dc:title');
-		$this->props['language'] = $this->singleVal($xpath, $root, 'dc:language');
-		$this->props['url'] = $this->singleVal($xpath, $root, 'dc:identifier');
+		$recnode = $this->singleNode($xpath, $root, 'm:record');
+		$title = $this->singleVal($xpath, $recnode, "m:datafield[@tag = '245']/m:subfield[@code = 'a']");
+		$partnodes = $xpath->query("m:datafield[@tag = '245']/m:subfield[@code = 'n']", $recnode);
+		$bookname = $title;
+		$parts = '';
 
-		$authornodes = $xpath->query('dc:creator', $root);
+		foreach ($partnodes as $node) {
+			$parts .= (empty($parts) ? '' : ', ') . $node->nodeValue;
+		}
+
+		if (!empty($parts)) {
+			$bookname .= " ($parts)";
+		}
+
+		$this->props['title'] = $bookname;
+
+		$authornodes = $xpath->query("m:datafield[@tag = '100' and m:subfield[@code = 'e'] = 'Author']/m:subfield[@code = 'a']", $recnode);
 		$authors = array();
 
 		foreach ($authornodes as $node) {

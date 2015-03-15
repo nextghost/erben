@@ -101,13 +101,14 @@ class MetsDoc extends MetadataXML {
 	}
 
 	protected function loadInfo(\DOMXPath $xpath, \DOMElement $root) {
-		$dcnodes = $xpath->query("m:dmdSec[@ID = 'DMD_DC']/m:mdWrap/m:xmlData/oai_dc:dc", $root);
-
-		if ($dcnodes->length != 1) {
-			throw new \Exception('MetsDoc: Error looking up Dublin Core metadata');
-		}
-
-		$this->props['info'] = new DublinCore($dcnodes->item(0), false);
+		$dcnode = $this->singleNode($xpath, $root, "m:dmdSec[@ID = 'DMD_DC']/m:mdWrap/m:xmlData/oai_dc:dc");
+		$marcnode = $this->singleNode($xpath, $root, "m:dmdSec[@ID = 'DMD_MARC']/m:mdWrap/m:xmlData/marc:collection");
+		$dcinfo = new DublinCore($dcnode, false);
+		$marcinfo = new MarcXml($marcnode, false);
+		$this->props['title'] = $marcinfo->title;
+		$this->props['authors'] = $dcinfo->authors;
+		$this->props['language'] = $dcinfo->language;
+		$this->props['url'] = $dcinfo->url;
 	}
 
 	protected function load(\DOMDocument $doc, \DOMElement $root) {
@@ -116,6 +117,7 @@ class MetsDoc extends MetadataXML {
 		$xpath->registerNamespace('m', $metsNS);
 		$xpath->registerNamespace('xl', 'http://www.w3.org/1999/xlink');
 		$xpath->registerNamespace('oai_dc', 'http://www.openarchives.org/OAI/2.0/oai_dc/');
+		$xpath->registerNamespace('marc', 'http://www.loc.gov/MARC21/slim');
 
 		if ($root->namespaceURI != $metsNS || $root->localName != 'mets') {
 			throw new \Exception('MetsDoc: Root node is not a valid METS document root');
