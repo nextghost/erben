@@ -35,7 +35,7 @@ require 'worker/init.php';
 require 'lib/init.php';
 
 try {
-	DataManager::enableCache(false); # Do not cache any data from database
+	\Base\DataManager::enableCache(false); # Do not cache any data from database
 	$disp = new \Worker\Dispatcher();
 	$disp->run();
 } catch (Exception $e) {
