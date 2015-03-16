@@ -31,7 +31,7 @@ $navfmt = <<<SNIPPET
 $firstlink $prevlink Page %d/%d $nextlink $lastlink
 SNIPPET;
 
-$pagecounter = p(trim($navfmt), $self->pagenum, $self->pagecount);
+$pagecounter = p('<div class="pager">'.trim($navfmt).'</div>', $self->pagenum, $self->pagecount);
 ?>
 <h1>Book Catalog</h1>
 
