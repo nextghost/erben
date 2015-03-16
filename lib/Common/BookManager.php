@@ -93,7 +93,7 @@ class BookManager extends \Base\DataManager {
 
 	public function pagelist($book) {
 		$params = array('book' => $book);
-		$stmt = $this->db->query('SELECT id, book, page, image IS NOT NULL AS has_image FROM erb_page WHERE book = :book ORDER BY page ASC', $params);
+		$stmt = $this->db->query('SELECT id, book, page, image IS NOT NULL AS has_image FROM erb_page WHERE book = :book ORDER BY page ASC, id ASC', $params);
 		$ret = array();
 
 		while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -106,6 +106,21 @@ class BookManager extends \Base\DataManager {
 		}
 
 		return $ret;
+	}
+
+	public function pagecount($book) {
+		$params = array('book' => $book);
+		$stmt = $this->db->query('SELECT count(*) as cnt FROM erb_page WHERE book = :book', $params);
+		$ret = $stmt->fetch(\PDO::FETCH_ASSOC);
+		return $ret['cnt'];
+	}
+
+	public function pagenav($pageid) {
+		$info = $this->pageInfo($pageid);
+		$params = array('book' => $info->book, 'pid' => $pageid, 'page' => $info->page);
+		$subsql = 'SELECT MIN(page) as first, MAX(page) as last, COUNT(*) AS cnt FROM erb_page WHERE book = :book AND';
+		$stmt = $this->db->query("SELECT MIN(a.id) AS first, MAX(b.id) AS prev, MIN(c.id) AS next, MAX(d.id) AS last, MIN(pred.cnt)+1 AS pos FROM (($subsql (page < :page OR (page = :page AND id < :pid))) AS pred CROSS JOIN ($subsql (page > :page OR (page = :page AND id > :pid))) AS succ) LEFT JOIN erb_page AS a ON pred.first = a.page LEFT JOIN erb_page AS b ON pred.last = b.page LEFT JOIN erb_page AS c ON succ.first = c.page LEFT JOIN erb_page AS d ON succ.last = d.page", $params);
+		return $stmt->fetch(\PDO::FETCH_ASSOC);
 	}
 
 	public function pageInfo($id) {

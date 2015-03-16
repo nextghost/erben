@@ -45,6 +45,8 @@ class Page extends \Base\Page {
 			$pinfo = $man->pageInfo($pageid);
 			$binfo = $man->bookInfo($pinfo->book);
 			$content = $man->pageContent($pageid);
+			$nav = $man->pagenav($pageid);
+			$pcount = $man->pagecount($pinfo->book);
 		} catch (\Common\NotFoundException $e) {
 			self::errorNotFound();
 		}
@@ -54,6 +56,12 @@ class Page extends \Base\Page {
 		$tpl->title = $binfo->title;
 		$tpl->content = $content;
 		$tpl->imagelink = $pinfo->has_image ? Images::imageUrl($pageid) : null;
+		$tpl->firsturl = is_null($nav['first']) ? null : self::url($nav['first']);
+		$tpl->prevurl = is_null($nav['prev']) ? null : self::url($nav['prev']);
+		$tpl->nexturl = is_null($nav['next']) ? null : self::url($nav['next']);
+		$tpl->lasturl = is_null($nav['last']) ? null : self::url($nav['last']);
+		$tpl->pagenum = $nav['pos'];
+		$tpl->pagecount = $pcount;
 		$this->sendHtml($tpl, $binfo->title);
 	}
 }

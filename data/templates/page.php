@@ -21,8 +21,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 if (empty($self) || !$self instanceOf \Web\Template) {
 	throw new Exception('Templates must be called using \\Web\\Template class.');
 }
+
+$firstlink = p('<a href="%s">&laquo; First</a>', $self->firsturl);
+$prevlink = p('<a href="%s">&lt; Previous</a>', $self->prevurl);
+$nextlink = p('<a href="%s">Next &gt;</a>', $self->nexturl);
+$lastlink = p('<a href="%s">Last &raquo;</a>', $self->lasturl);
+
+$navfmt = <<<SNIPPET
+$firstlink $prevlink Page %d (%d/%d) $nextlink $lastlink
+SNIPPET;
+
+$pagecounter = p('<div class="pager">'.trim($navfmt).'</div>', $self->page, $self->pagenum, $self->pagecount);
 ?>
 <h1><a href="<?php echo $self->booklink; ?>"><?php echo $self->title; ?></a>, page <?php echo $self->page; ?></h1>
+
+<?php echo $pagecounter; ?>
 
 <table class="pageview"><tr>
 <td><?php echo nl2br($self->content); ?></td>
@@ -38,3 +51,5 @@ SNIPPET;
 ?>
 </td>
 </tr></table>
+
+<?php echo $pagecounter; ?>
