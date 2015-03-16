@@ -93,7 +93,7 @@ class BookManager extends \Base\DataManager {
 
 	public function pagelist($book) {
 		$params = array('book' => $book);
-		$stmt = $this->db->query('SELECT id, book, page, image IS NOT NULL AS has_image FROM erb_page WHERE book = :book ORDER BY page ASC, id ASC', $params);
+		$stmt = $this->db->query('SELECT id, book, page, label, image IS NOT NULL AS has_image FROM erb_page WHERE book = :book ORDER BY page ASC', $params);
 		$ret = array();
 
 		while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -117,9 +117,9 @@ class BookManager extends \Base\DataManager {
 
 	public function pagenav($pageid) {
 		$info = $this->pageInfo($pageid);
-		$params = array('book' => $info->book, 'pid' => $pageid, 'page' => $info->page);
+		$params = array('book' => $info->book, 'page' => $info->page);
 		$subsql = 'SELECT MIN(page) as first, MAX(page) as last, COUNT(*) AS cnt FROM erb_page WHERE book = :book AND';
-		$stmt = $this->db->query("SELECT MIN(a.id) AS first, MAX(b.id) AS prev, MIN(c.id) AS next, MAX(d.id) AS last, MIN(pred.cnt)+1 AS pos FROM (($subsql (page < :page OR (page = :page AND id < :pid))) AS pred CROSS JOIN ($subsql (page > :page OR (page = :page AND id > :pid))) AS succ) LEFT JOIN erb_page AS a ON pred.first = a.page LEFT JOIN erb_page AS b ON pred.last = b.page LEFT JOIN erb_page AS c ON succ.first = c.page LEFT JOIN erb_page AS d ON succ.last = d.page", $params);
+		$stmt = $this->db->query("SELECT MIN(a.id) AS first, MAX(b.id) AS prev, MIN(c.id) AS next, MAX(d.id) AS last, MIN(pred.cnt)+1 AS pos FROM (($subsql page < :page) AS pred CROSS JOIN ($subsql page > :page) AS succ) LEFT JOIN erb_page AS a ON a.book = :book AND pred.first = a.page LEFT JOIN erb_page AS b ON b.book = :book AND pred.last = b.page LEFT JOIN erb_page AS c ON c.book = :book AND succ.first = c.page LEFT JOIN erb_page AS d ON d.book = :book AND succ.last = d.page", $params);
 		return $stmt->fetch(\PDO::FETCH_ASSOC);
 	}
 
@@ -129,7 +129,7 @@ class BookManager extends \Base\DataManager {
 		}
 
 		$params = array('id' => $id);
-		$stmt = $this->db->query('SELECT id, book, page, image IS NOT NULL AS has_image FROM erb_page WHERE id = :id', $params);
+		$stmt = $this->db->query('SELECT id, book, page, label, image IS NOT NULL AS has_image FROM erb_page WHERE id = :id', $params);
 		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
 
 		if (!$row) {

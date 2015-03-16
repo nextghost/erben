@@ -28,12 +28,12 @@ $nextlink = p('<a href="%s">Next &gt;</a>', $self->nexturl);
 $lastlink = p('<a href="%s">Last &raquo;</a>', $self->lasturl);
 
 $navfmt = <<<SNIPPET
-$firstlink $prevlink Page %d (%d/%d) $nextlink $lastlink
+$firstlink $prevlink Page %s (%d/%d) $nextlink $lastlink
 SNIPPET;
 
-$pagecounter = p('<div class="pager">'.trim($navfmt).'</div>', $self->page, $self->pagenum, $self->pagecount);
+$pagecounter = p('<div class="pager">'.trim($navfmt).'</div>', $self->label, $self->pagenum, $self->pagecount);
 ?>
-<h1><a href="<?php echo $self->booklink; ?>"><?php echo $self->title; ?></a>, page <?php echo $self->page; ?></h1>
+<h1><a href="<?php echo $self->booklink; ?>"><?php echo $self->title; ?></a>, page <?php echo $self->label; ?></h1>
 
 <?php echo $pagecounter; ?>
 

@@ -61,6 +61,7 @@ CREATE TABLE erb_page (
 	id SERIAL NOT NULL,
 	book INT NOT NULL,
 	page INT NOT NULL,
+	label VARCHAR(16) NOT NULL,
 	content TEXT NOT NULL,
 	image BYTEA NOT NULL,
 	PRIMARY KEY (id),

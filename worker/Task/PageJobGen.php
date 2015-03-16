@@ -22,6 +22,16 @@ namespace Task;
 class PageJobGen extends \Worker\Task {
 	private $pages = array();
 
+	public static function pagecmp($a, $b) {
+		if ($a['order'] < $b['order']) {
+			return -1;
+		} else if ($a['order'] == $b['order']) {
+			return 0;
+		} else {
+			return 1;
+		}
+	}
+
 	public function run($input) {
 		if (empty($input['book'])) {
 			throw new \Exception('PageJobGen: Book ID not set');
@@ -53,18 +63,22 @@ class PageJobGen extends \Worker\Task {
 
 			$tmp = array('book' => $input['book'],
 				'order' => $page['order'],
+				'label' => $page['label'],
 				'text' => $page['text'],
 				'image' => $page['image']);
 			$this->pages[] = $tmp;
 		}
+
+		usort($this->pages, '\Task\PageJobGen::pagecmp');
 	}
 
 	public function saveResult(\Common\Database $db) {
 		$jobman = new \Common\JobManager($db);
+		$i = 1;
 
 		foreach ($this->pages as $page) {
-			$jobman->createImportPage($page['book'], $page['order'],
-				$page['image'], $page['text']);
+			$jobman->createImportPage($page['book'], $i++,
+				$page['label'], $page['image'], $page['text']);
 		}
 	}
 }

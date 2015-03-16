@@ -21,7 +21,7 @@ namespace Data;
 
 class PageInfo extends \Base\StyledObject {
 	public function __construct(array $data) {
-		$keys = array('id', 'book', 'page', 'has_image');
+		$keys = array('id', 'book', 'page', 'label', 'has_image');
 		parent::__construct($data, $keys);
 	}
 
@@ -35,7 +35,7 @@ class PageInfo extends \Base\StyledObject {
 	protected function style_default(\Web\HtmlData $self) {
 		return <<<SNIPPET
 <span class="pagelink">
-<a href="$self->link">$self->page</a>
+<a href="$self->link">$self->label</a>
 </span>
 SNIPPET;
 	}

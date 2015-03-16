@@ -40,9 +40,9 @@ class JobManager extends \Base\DataManager {
 		$this->insertJob('PageJobGen', array('book' => $book));
 	}
 
-	public function createImportPage($book, $order, $image, $text) {
+	public function createImportPage($book, $order, $label, $image, $text) {
 		$input = array('book' => $book, 'order' => $order,
-			'image' => $image, 'text' => $text);
+			'label' => $label, 'image' => $image, 'text' => $text);
 		$this->insertJob('ImportPage', $input);
 	}
 }

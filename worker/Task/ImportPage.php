@@ -23,7 +23,7 @@ class ImportPage extends \Worker\Task {
 	private $rowdata = null;
 
 	public function run($input) {
-		if (empty($input['book']) || !isset($input['order']) || empty($input['image']) || empty($input['text'])) {
+		if (empty($input['book']) || !isset($input['order']) || !isset($input['label']) || empty($input['image']) || empty($input['text'])) {
 			throw new \Exception('ImportPage: Missing required parameters');
 		}
 
@@ -59,13 +59,16 @@ class ImportPage extends \Worker\Task {
 			throw new \Exception("ImportPage: Conversion subprocess returned error code $ret");
 		}
 
-		$this->rowdata = array('book' => $input['book'], 'page' => $input['order'], 'content' => $text, 'image' => $png);
+		$this->rowdata = array('book' => $input['book'],
+			'page' => $input['order'], 'label' => $input['label'],
+			'content' => $text, 'image' => $png);
 	}
 
 	public function saveResult(\Common\Database $db) {
-		$stmt = $db->prepare('INSERT INTO erb_page (book, page, content, image) VALUES (:book, :page, :content, :image)');
+		$stmt = $db->prepare('INSERT INTO erb_page (book, page, label, content, image) VALUES (:book, :page, :label, :content, :image)');
 		$stmt->bindParam(':book', $this->rowdata['book']);
 		$stmt->bindParam(':page', $this->rowdata['page']);
+		$stmt->bindParam(':label', $this->rowdata['label']);
 		$stmt->bindParam(':content', $this->rowdata['content']);
 		$stmt->bindParam(':image', $this->rowdata['image'], \PDO::PARAM_LOB);
 

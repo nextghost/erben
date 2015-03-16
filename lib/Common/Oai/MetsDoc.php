@@ -69,6 +69,7 @@ class MetsDoc extends MetadataXML {
 			$tmp['id'] = $id = $page->getAttribute('ID');
 			$tmp['type'] = $page->getAttribute('TYPE');
 			$tmp['order'] = $order = $page->getAttribute('ORDER');
+			$tmp['label'] = $order = $page->getAttribute('ORDERLABEL');
 
 			if (!preg_match('/^[0-9]+$/', $tmp['order'])) {
 				throw new \Exception("MetsDoc: Page \"$id\" has invalid order \"$order\"");
