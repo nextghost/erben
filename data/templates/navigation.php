@@ -21,8 +21,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 if (empty($self) || !$self instanceOf \Web\Template) {
 	throw new Exception('Templates must be called using \\Web\\Template class.');
 }
+
+$tr_main = tr('Main Page');
+$tr_catalog = tr('Book Catalog');
 ?>
 <div class="navigation">
-<a href="<?php echo $self->url_index; ?>">Main Page</a>
-<a href="<?php echo $self->url_catalog; ?>">Book Catalog</a>
+<a href="<?php echo $self->url_index; ?>"><?php echo $tr_main; ?></a>
+<a href="<?php echo $self->url_catalog; ?>"><?php echo $tr_catalog; ?></a>
 </div>

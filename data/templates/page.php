@@ -22,18 +22,22 @@ if (empty($self) || !$self instanceOf \Web\Template) {
 	throw new Exception('Templates must be called using \\Web\\Template class.');
 }
 
-$firstlink = p('<a href="%s">&laquo; First</a>', $self->firsturl);
-$prevlink = p('<a href="%s">&lt; Previous</a>', $self->prevurl);
-$nextlink = p('<a href="%s">Next &gt;</a>', $self->nexturl);
-$lastlink = p('<a href="%s">Last &raquo;</a>', $self->lasturl);
+$linkfmt = '<a href="%s">%s</a>';
+$firstlink = p($linkfmt, $self->firsturl, tr('&laquo; First'));
+$prevlink = p($linkfmt, $self->prevurl, tr('&lt; Previous'));
+$nextlink = p($linkfmt, $self->nexturl, tr('Next &gt;'));
+$lastlink = p($linkfmt, $self->lasturl, tr('Last &raquo;'));
 
-$navfmt = <<<SNIPPET
-$firstlink $prevlink Page %s (%d/%d) $nextlink $lastlink
-SNIPPET;
+$booklink = sprintf($linkfmt, $self->booklink, $self->title);
+$tr_title = sprintf(tr('%s, page %s'), $booklink, $self->label);
+$tr_imgalt = htmlspecialchars(tr('Scanned page image'));
+$tr_noimg = tr('Image not available');
+$tr_pagenum = tr('Page %s (%d/%d)');
+$navfmt = "$firstlink $prevlink $tr_pagenum $nextlink $lastlink";
 
 $pagecounter = p('<div class="pager">'.trim($navfmt).'</div>', $self->label, $self->pagenum, $self->pagecount);
 ?>
-<h1><a href="<?php echo $self->booklink; ?>"><?php echo $self->title; ?></a>, page <?php echo $self->label; ?></h1>
+<h1><?php echo $tr_title; ?></h1>
 
 <?php echo $pagecounter; ?>
 
@@ -43,10 +47,10 @@ $pagecounter = p('<div class="pager">'.trim($navfmt).'</div>', $self->label, $se
 <?php
 if ($self->has_image) {
 	echo <<<SNIPPET
-<a href="$self->imagelink"><img class="bookpage" src="$self->imagelink" alt="Scanned page image"/></a>
+<a href="$self->imagelink"><img class="bookpage" src="$self->imagelink" alt="$tr_imgalt"/></a>
 SNIPPET;
 } else {
-	echo "Image not available";
+	echo $tr_noimg;
 }
 ?>
 </td>

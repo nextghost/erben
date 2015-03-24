@@ -26,5 +26,8 @@ $config = array(
 		'dsn' => 'pgsql:host=localhost;dbname=database',
 		'username' => 'username',
 		'password' => 'password',
+	),
+	'sys' => array(
+		'default_lang' => null,
 	)
 );

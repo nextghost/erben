@@ -21,5 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 if (empty($self) || !$self instanceOf \Web\Template) {
 	throw new Exception('Templates must be called using \\Web\\Template class.');
 }
+
+$tr_title = tr('Hello world!');
 ?>
-<h1>Hello world!</h1>
+<h1><?php echo $tr_title; ?></h1>

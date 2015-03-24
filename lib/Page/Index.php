@@ -28,6 +28,6 @@ class Index extends \Base\Page {
 	public function runWeb() {
 		self::checkCanonicalUrl(self::url());
 		$tpl = new \Web\Template('index.php');
-		$this->sendHtml($tpl, 'Main Page');
+		$this->sendHtml($tpl, tr('Main Page'));
 	}
 }

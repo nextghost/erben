@@ -35,3 +35,4 @@ function error_handler($errno, $errstr, $file, $line) {
 spl_autoload_register('\\Common\\autoload');
 set_error_handler('\\Common\\error_handler');
 require_once APP_BASEDIR . '/lib/tpltools.php';
+initlang();

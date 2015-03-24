@@ -76,6 +76,6 @@ class Catalog extends \Base\Page {
 			$tpl->lasturl = null;
 		}
 
-		$this->sendHtml($tpl, 'Book Catalog');
+		$this->sendHtml($tpl, tr('Book Catalog'));
 	}
 }

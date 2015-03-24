@@ -21,12 +21,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 if (empty($self) || !$self instanceOf \Web\Template) {
 	throw new Exception('Templates must be called using \\Web\\Template class.');
 }
+
+$tr_srcrepo = tr('Source repository');
+$tr_pages = tr('Pages');
 ?>
 <h1><?php echo $self->title; ?></h1>
 
-<p><a href="<?php echo $self->web; ?>">Source repository</a></p>
+<p><a href="<?php echo $self->web; ?>"><?php echo $tr_srcrepo; ?></a></p>
 
-<h2>Pages</h2>
+<h2><?php echo $tr_pages; ?></h2>
 <div class="pagelist">
 <?php echo $self->glue(' ')->_pages; ?>
 </div>
