@@ -39,7 +39,8 @@ class PageJobGen extends \Worker\Task {
 
 		$pagetypes = array('FrontCover' => 0, 'FrontEndSheet' => 0,
 			'TitlePage' => 1, 'Blank' => 0, 'NormalPage' => 1,
-			'BackEndSheet' => 0, 'BackCover' => 0
+			'BackEndSheet' => 0, 'BackCover' => 0,
+			'TableOfContents' => 1
 		);
 
 		$bookman = new \Common\BookManager();
@@ -52,7 +53,7 @@ class PageJobGen extends \Worker\Task {
 			$type = $page['type'];
 
 			if (!isset($pagetypes[$type])) {
-				$this->log[] = "PageJobGen: Warning: Page $id has unknown type \"$type\"";
+				$this->log[] = "PageJobGen: Warning: Page {$page['id']} has unknown type \"$type\"";
 			} else if (!$pagetypes[$type]) {
 				continue;
 			}
