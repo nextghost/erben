@@ -19,3 +19,11 @@ table.pageview td {
 .center {
 	text-align: center;
 }
+
+div.booklink.open {
+	background-color: #ffff60;
+}
+
+div.booklink.finished {
+	background-color: #60ff60;
+}

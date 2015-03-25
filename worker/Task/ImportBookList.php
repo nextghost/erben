@@ -55,7 +55,7 @@ class ImportBookList extends \Worker\Task {
 
 			$params = $item;
 			unset($params['authors']);
-			$db->query('INSERT INTO erb_book (title, kramerius_id, web, lang, srcrepo) VALUES (:title, :kramid, :web, :lang, :srcrepo)', $params);
+			$db->query('INSERT INTO erb_book (title, kramerius_id, web, lang, srcrepo, status) VALUES (:title, :kramid, :web, :lang, :srcrepo, 0)', $params);
 			$id = $db->lastInsertId('erb_book_id_seq');
 
 			foreach ($item['authors'] as $author) {

@@ -22,7 +22,7 @@ namespace Data;
 class BookInfo extends \Base\StyledObject {
 	public function __construct(array $data) {
 		$keys = array('id', 'title', 'kramerius_id', 'web', 'lang',
-			'srcrepo');
+			'srcrepo', 'status');
 		parent::__construct($data, $keys);
 	}
 
@@ -33,8 +33,16 @@ class BookInfo extends \Base\StyledObject {
 	}
 
 	protected function style_default(\Web\HtmlData $self) {
+		$class = 'booklink';
+
+		if ($self->status == 1) {
+			$class .= ' open';
+		} else if ($self->status == 2) {
+			$class .= ' finished';
+		}
+
 		return <<<SNIPPET
-<div class="booklink">
+<div class="$class">
 <a href="$self->link">$self->title</a>
 </div>
 SNIPPET;

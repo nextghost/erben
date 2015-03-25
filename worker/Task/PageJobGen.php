@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 namespace Task;
 
 class PageJobGen extends \Worker\Task {
+	private $book = null;
 	private $pages = array();
 
 	public static function pagecmp($a, $b) {
@@ -48,6 +49,7 @@ class PageJobGen extends \Worker\Task {
 		$rinfo = $bookman->repoInfo($binfo->srcrepo);
 		$repo = new \Common\Oai\Repository($rinfo->url);
 		$mets = $repo->getRecord($binfo->kramerius_id, $rinfo->metaformat);
+		$this->book = $input['book'];
 
 		foreach ($mets->pages as $page) {
 			$type = $page['type'];
@@ -62,8 +64,7 @@ class PageJobGen extends \Worker\Task {
 				throw new \Exception("PageJobGen: Page {$page['id']} has no image URL");
 			}
 
-			$tmp = array('book' => $input['book'],
-				'order' => $page['order'],
+			$tmp = array('order' => $page['order'],
 				'label' => $page['label'],
 				'text' => $page['text'],
 				'image' => $page['image']);
@@ -78,8 +79,11 @@ class PageJobGen extends \Worker\Task {
 		$i = 1;
 
 		foreach ($this->pages as $page) {
-			$jobman->createImportPage($page['book'], $i++,
+			$jobman->createImportPage($this->book, $i++,
 				$page['label'], $page['image'], $page['text']);
 		}
+
+		$params = array('book' => $this->book);
+		$db->query('UPDATE erb_book SET status = 1 WHERE id = :book', $params);
 	}
 }
