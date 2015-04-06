@@ -23,6 +23,7 @@ class BookManager extends \Base\DataManager {
 	protected static $repoCache = array();
 	protected static $bookCache = array();
 	protected static $pageCache = array();
+	protected static $revisionCache = array();
 
 	public function repoInfo($id) {
 		if (self::$useCache && isset(self::$repoCache[$id])) {
@@ -171,5 +172,55 @@ class BookManager extends \Base\DataManager {
 		}
 
 		return $data;
+	}
+
+	public function savePageRevision($pageid, $parent, $content, $typesetting, $splitpara, $extrapage) {
+		# FIXME: add user ID of current user
+		$params = array('page_id' => $pageid,
+			'parent' => $parent, 'content' => $content,
+			'typesetting' => $typesetting ? 1 : 0,
+			'splitpara' => $splitpara ? 1 : 0,
+			'extrapage' => $extrapage ? 1 : 0);
+		$this->db->query('INSERT INTO erb_pagerevision (page, parent, created, content, typesetting, splitpara, extrapage) VALUES (:page_id, :parent, NOW(), :content, :typesetting, :splitpara, :extrapage)', $params);
+		return $this->db->lastInsertId('erb_pagerevision_id_seq');
+	}
+
+	public function revisionInfo($id) {
+		if (self::$useCache && isset(self::$revisionCache[$id])) {
+			return self::$revisionCache[$id];
+		}
+
+		$params = array('id' => $id);
+		$stmt = $this->db->query('SELECT * FROM erb_pagerevision WHERE id = :id', $params);
+		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+		if (!$row) {
+			throw new NotFoundException("BookManager: Revision $id does not exist");
+		}
+
+		$ret = new \Data\RevisionInfo($row);
+
+		if (self::$useCache) {
+			self::$revisionCache[$ret->id] = $ret;
+		}
+
+		return $ret;
+	}
+
+	public function revisionList($pageid) {
+		$params = array('page' => $pageid);
+		$stmt = $this->db->query('SELECT * FROM erb_pagerevision WHERE page = :page ORDER BY created ASC, id ASC', $params);
+		$ret = array();
+
+		while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+			$tmp = new \Data\RevisionInfo($row);
+			$ret[] = $tmp;
+
+			if (self::$useCache) {
+				self::$revisionCache[$tmp->id] = $tmp;
+			}
+		}
+
+		return $ret;
 	}
 }

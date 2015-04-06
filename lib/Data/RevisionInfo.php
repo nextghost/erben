@@ -17,19 +17,31 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+namespace Data;
 
-global $config;
+class RevisionInfo extends \Base\StyledObject {
+	public function __construct(array $data) {
+		$keys = array('id', 'page', 'parent', 'created', 'content',
+			'typesetting', 'splitpara', 'extrapage');
 
-# Fill in the database connection details and rename this file to config.php
-$config = array(
-	'db' => array(
-		'dsn' => 'pgsql:host=localhost;dbname=database',
-		'username' => 'username',
-		'password' => 'password',
-	),
-	'sys' => array(
-		'default_lang' => null,
-		# Leave commented out to use timezone settings from php.ini
-#		'default_timezone' => 'UTC',
-	)
-);
+		if (!empty($data['created'])) {
+			$data['created'] = date('Y-m-d H:i:s', strtotime($data['created']));
+		}
+
+		parent::__construct($data, $keys);
+	}
+
+	public function htmldata() {
+		$ret = parent::htmldata();
+		$ret->link = \Page\Page::url($this->data['page'], $this->data['id']);
+		return $ret;
+	}
+
+	protected function style_default(\Web\HtmlData $self) {
+		return <<<SNIPPET
+<div class="pagerevision">
+<a href="$self->link">$self->created</a>
+</div>
+SNIPPET;
+	}
+}

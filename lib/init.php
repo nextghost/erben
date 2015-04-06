@@ -32,7 +32,21 @@ function error_handler($errno, $errstr, $file, $line) {
 	throw new \ErrorException($errstr, $errno, 1, $file, $line);
 }
 
+function init_timezone() {
+	$cfg = new \Common\Config();
+	$conf = $cfg->config();
+
+	if (empty($conf['sys']['default_timezone']) || !@date_default_timezone_set($conf['sys']['default_timezone'])) {
+		$tz = ini_get('date.timezone');
+
+		if (empty($tz)) {
+			date_default_timezone_set('UTC');
+		}
+	}
+}
+
 spl_autoload_register('\\Common\\autoload');
 set_error_handler('\\Common\\error_handler');
+init_timezone();
 require_once APP_BASEDIR . '/lib/tpltools.php';
 initlang();

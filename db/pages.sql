@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+DROP TABLE IF EXISTS erb_pagerevision;
 DROP TABLE IF EXISTS erb_page;
 DROP TABLE IF EXISTS erb_author_prep;
 DROP TABLE IF EXISTS erb_book;
@@ -68,4 +69,19 @@ CREATE TABLE erb_page (
 	PRIMARY KEY (id),
 	UNIQUE (book, page),
 	FOREIGN KEY (book) REFERENCES erb_book (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE erb_pagerevision (
+	id BIGSERIAL NOT NULL,
+	page INT NOT NULL,
+	parent BIGINT,
+-- FIXME: add field for user ID
+	created TIMESTAMP WITH TIME ZONE NOT NULL,
+	content TEXT NOT NULL,
+	typesetting BOOLEAN NOT NULL,
+	splitpara BOOLEAN NOT NULL,
+	extrapage BOOLEAN NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY (page) REFERENCES erb_page (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (parent) REFERENCES erb_pagerevision (id) ON DELETE CASCADE ON UPDATE CASCADE
 );

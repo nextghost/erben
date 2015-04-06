@@ -28,6 +28,7 @@ $prevlink = p($linkfmt, $self->prevurl, tr('&lt; Previous'));
 $nextlink = p($linkfmt, $self->nexturl, tr('Next &gt;'));
 $lastlink = p($linkfmt, $self->lasturl, tr('Last &raquo;'));
 
+$origlink = sprintf($linkfmt, $self->origurl, tr('Original'));
 $booklink = sprintf($linkfmt, $self->booklink, $self->title);
 $tr_title = sprintf(tr('%s, page %s'), $booklink, $self->label);
 $tr_imgalt = htmlspecialchars(tr('Scanned page image'));
@@ -36,13 +37,72 @@ $tr_pagenum = tr('Page %s (%d/%d)');
 $navfmt = "$firstlink $prevlink $tr_pagenum $nextlink $lastlink";
 
 $pagecounter = p('<div class="pager">'.trim($navfmt).'</div>', $self->label, $self->pagenum, $self->pagecount);
+$content = nl2br(trim($self->content));
 ?>
 <h1><?php echo $tr_title; ?></h1>
 
 <?php echo $pagecounter; ?>
 
+<div class="pagerevs">
+<div class="pagerevision">
+<?php echo $origlink; ?>
+</div>
+<?php echo $self->_revisions; ?>
+</div>
+
 <table class="pageview"><tr>
-<td><?php echo nl2br($self->content); ?></td>
+<td>
+<?php
+if ($self->showcontent) {
+	echo <<<SNIPPET
+  <div class="pagetext">$content</div>
+SNIPPET;
+}
+
+if (!empty($self->showform)) {
+	$tr_typesetting = tr('This page contains complex typesetting');
+	$tr_splitpara = tr('Last paragraph continues on next page');
+	$tr_extrapage = tr('This entire page is not part of the main text (e.g. full-page illustration, colophon, table of contents etc.)');
+	$tr_savepage = tr('Save');
+	$tr_preview = tr('Preview');
+	$tr_cancel = tr('Cancel edit');
+	$val_typesetting = $self->form_typesetting ? 'checked="checked"' : '';
+	$val_splitpara = $self->form_splitpara ? 'checked="checked"' : '';
+	$val_extrapage = $self->form_extrapage ? 'checked="checked"' : '';
+
+	$errsnip = empty($self->form_error) ? '' : "<div class=\"error\">$self->form_error</div>";
+
+	echo <<<SNIPPET
+<div class="editform">
+  <form action="$self->form_action" method="post">
+    $errsnip
+    <textarea rows="30" cols="80" name="content">$self->form_content</textarea>
+    <div class="metainfo">
+      <div><input type="checkbox" name="typesetting" $val_typesetting> $tr_typesetting</div>
+      <div><input type="checkbox" name="splitpara" $val_splitpara> $tr_splitpara</div>
+      <div><input type="checkbox" name="extrapage" $val_extrapage> $tr_extrapage</div>
+    </div>
+    <div class="buttons">
+      <input type="submit" name="savepage" value="$tr_savepage">
+      <input type="submit" name="preview" value="$tr_preview">
+      <input type="submit" name="cancel" value="$tr_cancel">
+    </div>
+  </form>
+</div>
+SNIPPET;
+} else {
+	$tr_editpage = tr('Edit');
+	echo <<<SNIPPET
+<div class="actionbuttons">
+  <form action="$self->form_action" method="get">
+    <input type="hidden" name="action" value="edit">
+    <input type="submit" value="$tr_editpage">
+  </form>
+</div>
+SNIPPET;
+}
+?>
+</td>
 <td class="center">
 <?php
 if ($self->has_image) {
