@@ -28,7 +28,9 @@ $config = array(
 		'password' => 'password',
 	),
 	'sys' => array(
-		'default_lang' => null,
+		# see data/lang/ for available translations
+		# example: 'default_lang' => 'en'
+		'default_lang' => null, # this will default to English
 		# Leave commented out to use timezone settings from php.ini
 #		'default_timezone' => 'UTC',
 	)

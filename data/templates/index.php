@@ -22,6 +22,19 @@ if (empty($self) || !$self instanceOf \Web\Template) {
 	throw new Exception('Templates must be called using \\Web\\Template class.');
 }
 
-$tr_title = tr('Hello world!');
+$tr_title = tr('Welcome to Erben');
+
+$tr_intro = tr('Help us convert scanned paper books into full e-books. Books in our catalog have been only partially digitized, we need your help to fix any OCR conversion errors and add basic formatting to the text.');
+
+$tr_books = tr('Each book is split into multiple separate pages. The initial text for each page is raw output from OCR software which needs to be corrected and formatted by hand. The purpose of Erben is to make it as easy as possible for you to help.');
+
+$tr_stages = tr('Some books in the catalog may not have any pages yet. Page images take a lot of space so we\'ll add those pages later when other books get finished. Books that are open for corrections and formatting are highlighted in the catalog.');
+
+$tr_projectname = tr('Erben is named in honor of 19th century Czech writer Karel Jaromír Erben. His most famous works were collections of Czech folklore and poems with themes related to folklore.');
 ?>
 <h1><?php echo $tr_title; ?></h1>
+
+<p><?php echo $tr_intro; ?></p>
+<p><?php echo $tr_books; ?></p>
+<p><?php echo $tr_stages; ?></p>
+<p><?php echo $tr_projectname; ?></p>
