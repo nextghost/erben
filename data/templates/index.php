@@ -26,6 +26,8 @@ $tr_title = tr('Welcome to Erben');
 
 $tr_intro = tr('Help us convert scanned paper books into full e-books. Books in our catalog have been only partially digitized, we need your help to fix any OCR conversion errors and add basic formatting to the text.');
 
+$tr_demo = tr('Well, not yet. Erben is still under construction and we need developers and designers before we start digitizing our first books. This installation is only a sandbox where you can freely explore all implemented features and look for things you could improve. If you\'d like to help with development of Erben, visit the <a href="https://github.com/nextghost/erben">Erben repository on GitHub</a>. All edits you make here will be deleted during the next database schema update. They will not become part of any e-book.');
+
 $tr_books = tr('Each book is split into multiple separate pages. The initial text for each page is raw output from OCR software which needs to be corrected and formatted by hand. The purpose of Erben is to make it as easy as possible for you to help.');
 
 $tr_stages = tr('Some books in the catalog may not have any pages yet. Page images take a lot of space so we\'ll add those pages later when other books get finished. Books that are open for corrections and formatting are highlighted in the catalog.');
@@ -35,6 +37,7 @@ $tr_projectname = tr('Erben is named in honor of 19th century Czech writer Karel
 <h1><?php echo $tr_title; ?></h1>
 
 <p><?php echo $tr_intro; ?></p>
+<p><?php echo $tr_demo; ?></p>
 <p><?php echo $tr_books; ?></p>
 <p><?php echo $tr_stages; ?></p>
 <p><?php echo $tr_projectname; ?></p>
