@@ -30,7 +30,10 @@ class Page extends \Base\Page {
 		$url->setChunk(0, 'page');
 		$url->setChunk(1, $pageid, $binfo->title);
 
-		if (!is_null($revid)) {
+		if ($revid === 0) {
+			# Original text
+			$url->setChunk(2, $revid);
+		} else if (!is_null($revid)) {
 			$rinfo = $man->revisionInfo($revid);
 
 			if ($rinfo->page != $pageid) {
@@ -70,7 +73,7 @@ class Page extends \Base\Page {
 			self::redirect($canonurl, 303);
 		} else if (!empty($_POST['savepage'])) {
 			try {
-				$newrev = $man->savePageRevision($pageid, $revid, $post_content, $post_typesetting, $post_splitpara, $post_extrapage);
+				$newrev = $man->savePageRevision($pageid, $revid ? $revid : null, $post_content, $post_typesetting, $post_splitpara, $post_extrapage);
 				self::redirect(self::url($pageid, $newrev), 303);
 			} catch (\Exception $e) {
 				$this->error = tr('Could not save changes. Please try again later.');
@@ -79,8 +82,20 @@ class Page extends \Base\Page {
 
 		try {
 			self::checkCanonicalUrl($canonurl);
+			$revisions = $man->revisionList($pageid);
+			$form_action = $canonurl;
 
 			if (is_null($revid)) {
+				$rinfo = end($revisions);
+
+				if (empty($rinfo)) {
+					$content = $man->pageContent($pageid);
+				} else {
+					$content = $rinfo->content;
+					$revid = $rinfo->id;
+					$form_action = self::url($pageid, $revid);
+				}
+			} else if ($revid === 0) {
 				$content = $man->pageContent($pageid);
 			} else {
 				$rinfo = $man->revisionInfo($revid);
@@ -89,7 +104,6 @@ class Page extends \Base\Page {
 
 			$nav = $man->pagenav($pageid);
 			$pcount = $man->pagecount($pinfo->book);
-			$revisions = $man->revisionList($pageid);
 		} catch (\Common\NotFoundException $e) {
 			self::errorNotFound();
 		}
@@ -104,7 +118,7 @@ class Page extends \Base\Page {
 		$tpl->content = $content;
 		$tpl->showcontent = 1;
 		$tpl->imagelink = $pinfo->has_image ? Images::imageUrl($pageid) : null;
-		$tpl->origurl = self::url($pageid);
+		$tpl->origurl = self::url($pageid, 0);
 		$tpl->firsturl = is_null($nav['first']) ? null : self::url($nav['first']);
 		$tpl->prevurl = is_null($nav['prev']) ? null : self::url($nav['prev']);
 		$tpl->nexturl = is_null($nav['next']) ? null : self::url($nav['next']);
@@ -113,7 +127,7 @@ class Page extends \Base\Page {
 		$tpl->pagecount = $pcount;
 		$tpl->revisions = $revisions;
 
-		$tpl->form_action = $path->getUrl();
+		$tpl->form_action = $form_action;
 		$action = empty($_GET['action']) ? '' : $_GET['action'];
 
 		if ($action == 'edit' || !empty($_POST)) {
