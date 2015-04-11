@@ -214,7 +214,7 @@ class BookManager extends \Base\DataManager {
 
 		while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
 			$tmp = new \Data\RevisionInfo($row);
-			$ret[] = $tmp;
+			$ret[$tmp->id] = $tmp;
 
 			if (self::$useCache) {
 				self::$revisionCache[$tmp->id] = $tmp;

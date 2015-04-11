@@ -44,4 +44,20 @@ class RevisionInfo extends \Base\StyledObject {
 </div>
 SNIPPET;
 	}
+
+	protected function style_selected(\Web\HtmlData $self) {
+		return <<<SNIPPET
+<div class="pagerevision current">
+<a href="$self->link">$self->created</a>
+</div>
+SNIPPET;
+	}
+
+	protected function style_parent(\Web\HtmlData $self) {
+		return <<<SNIPPET
+<div class="pagerevision parent">
+<a href="$self->link">$self->created</a>
+</div>
+SNIPPET;
+	}
 }

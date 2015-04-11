@@ -125,6 +125,22 @@ class Page extends \Base\Page {
 		$tpl->lasturl = is_null($nav['last']) ? null : self::url($nav['last']);
 		$tpl->pagenum = $nav['pos'];
 		$tpl->pagecount = $pcount;
+		$tpl->origlink_class = '';
+
+		if (empty($revid)) {
+			$tpl->origlink_class = 'current';
+		} else {
+			if (!empty($revisions[$revid])) {
+				$revisions[$revid]->setstyle('selected');
+			}
+
+			if (empty($rinfo->parent)) {
+				$tpl->origlink_class = 'parent';
+			} else if (!empty($revisions[$revid])) {
+				$revisions[$rinfo->parent]->setstyle('parent');
+			}
+		}
+
 		$tpl->revisions = $revisions;
 
 		$tpl->form_action = $form_action;

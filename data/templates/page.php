@@ -28,6 +28,7 @@ $prevlink = p($linkfmt, $self->prevurl, tr('&lt; Previous'));
 $nextlink = p($linkfmt, $self->nexturl, tr('Next &gt;'));
 $lastlink = p($linkfmt, $self->lasturl, tr('Last &raquo;'));
 
+$origclass = trim("pagerevision $self->origlink_class");
 $origlink = sprintf($linkfmt, $self->origurl, tr('Original'));
 $booklink = sprintf($linkfmt, $self->booklink, $self->title);
 $tr_title = sprintf(tr('%s, page %s'), $booklink, $self->label);
@@ -44,10 +45,14 @@ $content = nl2br(trim($self->content));
 <?php echo $pagecounter; ?>
 
 <div class="pagerevs">
-<div class="pagerevision">
-<?php echo $origlink; ?>
+<?php
+echo <<<SNIPPET
+<div class="$origclass">
+$origlink
 </div>
-<?php echo $self->_revisions; ?>
+$self->_revisions
+SNIPPET;
+?>
 </div>
 
 <table class="pageview"><tr>

@@ -27,3 +27,7 @@ div.booklink.open {
 div.booklink.finished {
 	background-color: #60ff60;
 }
+
+div.pagerevision.current {
+	font-weight: bold;
+}

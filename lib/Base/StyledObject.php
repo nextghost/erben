@@ -21,6 +21,7 @@ namespace Base;
 
 abstract class StyledObject {
 	protected $data = array();
+	protected $renderstyle = 'default';
 
 	protected function __construct(array $data, array $reqfields = array()) {
 		foreach ($reqfields as $key) {
@@ -54,7 +55,11 @@ abstract class StyledObject {
 		return $ret;
 	}
 
-	public function render($style = 'default') {
+	public function render($style = null) {
+		if (is_null($style)) {
+			$style = $this->renderstyle;
+		}
+
 		$funcname = "style_$style";
 
 		if (!method_exists($this, $funcname)) {
@@ -62,6 +67,14 @@ abstract class StyledObject {
 		}
 
 		return $this->$funcname($this->htmldata());
+	}
+
+	public function setstyle($style) {
+		if (!method_exists($this, "style_$style")) {
+			throw new \Exception(__CLASS__ . "::setstyle(): undefined style \"$style\"");
+		}
+
+		$this->renderstyle = $style;
 	}
 
 	protected function style_default(\Web\HtmlData $self) {
