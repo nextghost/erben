@@ -38,7 +38,6 @@ $tr_pagenum = tr('Page %s (%d/%d)');
 $navfmt = "$firstlink $prevlink $tr_pagenum $nextlink $lastlink";
 
 $pagecounter = p('<div class="pager">'.trim($navfmt).'</div>', $self->label, $self->pagenum, $self->pagecount);
-$content = nl2br(trim($self->content));
 ?>
 <h1><?php echo $tr_title; ?></h1>
 
@@ -60,7 +59,7 @@ SNIPPET;
 <?php
 if ($self->showcontent) {
 	echo <<<SNIPPET
-  <div class="pagetext">$content</div>
+  <div class="pagetext">$self->_htmlcontent</div>
 SNIPPET;
 }
 

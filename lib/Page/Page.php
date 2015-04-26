@@ -68,13 +68,17 @@ class Page extends \Base\Page {
 		$post_typesetting = !empty($_POST['typesetting']);
 		$post_splitpara = !empty($_POST['splitpara']);
 		$post_extrapage = !empty($_POST['extrapage']);
+		$markup = new \Web\HtmlMarkup();
 
 		if (!empty($_POST['cancel'])) {
 			self::redirect($canonurl, 303);
 		} else if (!empty($_POST['savepage'])) {
 			try {
+				$markup->parse($post_content);
 				$newrev = $man->savePageRevision($pageid, $revid ? $revid : null, $post_content, $post_typesetting, $post_splitpara, $post_extrapage);
 				self::redirect(self::url($pageid, $newrev), 303);
+			} catch (\Common\ParseErrorException $e) {
+				$this->error = sprintf(tr('Changes could not be saved due to error in markup: %s'), $e->getMessage());
 			} catch (\Exception $e) {
 				$this->error = tr('Could not save changes. Please try again later.');
 			}
@@ -84,6 +88,7 @@ class Page extends \Base\Page {
 			self::checkCanonicalUrl($canonurl);
 			$revisions = $man->revisionList($pageid);
 			$form_action = $canonurl;
+			$parsecontent = false;
 
 			if (is_null($revid)) {
 				$rinfo = end($revisions);
@@ -92,6 +97,7 @@ class Page extends \Base\Page {
 					$content = $man->pageContent($pageid);
 				} else {
 					$content = $rinfo->content;
+					$parsecontent = true;
 					$revid = $rinfo->id;
 					$form_action = self::url($pageid, $revid);
 				}
@@ -100,6 +106,7 @@ class Page extends \Base\Page {
 			} else {
 				$rinfo = $man->revisionInfo($revid);
 				$content = $rinfo->content;
+				$parsecontent = true;
 			}
 
 			$nav = $man->pagenav($pageid);
@@ -109,14 +116,14 @@ class Page extends \Base\Page {
 		}
 
 		if (!empty($_POST['savepage']) || !empty($_POST['preview'])) {
-			$content = empty($_POST['content']) ? '' : $_POST['content'];
+			$content = $post_content;
+			$parsecontent = true;
 		}
 
+		$showcontent = 1;
 		$tpl = new \Web\Template('page.php');
 		$tpl->merge($pinfo->htmldata());
 		$tpl->title = $binfo->title;
-		$tpl->content = $content;
-		$tpl->showcontent = 1;
 		$tpl->imagelink = $pinfo->has_image ? Images::imageUrl($pageid) : null;
 		$tpl->origurl = self::url($pageid, 0);
 		$tpl->firsturl = is_null($nav['first']) ? null : self::url($nav['first']);
@@ -148,7 +155,6 @@ class Page extends \Base\Page {
 
 		if ($action == 'edit' || !empty($_POST)) {
 			$tpl->form_error = $this->error;
-			$tpl->form_content = empty($_POST) ? $content : $post_content;
 
 			if (empty($_POST) && !empty($rinfo)) {
 				$tpl->form_typesetting = $rinfo->typesetting;
@@ -160,13 +166,36 @@ class Page extends \Base\Page {
 				$tpl->form_extrapage = $post_extrapage;
 			}
 
-			$tpl->showform = 1;
+			$showform = 1;
 
 			if (empty($_POST['preview'])) {
-				$tpl->showcontent = 0;
+				$showcontent = 0;
 			}
 		} else {
-			$tpl->showform = 0;
+			$showform = 0;
+		}
+
+		$tpl->showcontent = $showcontent;
+		$tpl->showform = $showform;
+
+		if ($showcontent) {
+			if ($parsecontent) {
+				try {
+					$tpl->htmlcontent = $markup->parse($content);
+				} catch (\Common\ParseErrorException $e) {
+					$tpl->htmlcontent = sprintf(tr('Cannot show content due to error in markup: %s'), $e->getMessage());
+				}
+			} else {
+				$tpl->htmlcontent = nl2br(htmlspecialchars($content));
+			}
+		}
+
+		if ($showform) {
+			if ($parsecontent) {
+				$tpl->form_content = $content;
+			} else {
+				$tpl->form_content = $markup->sanitize($content);
+			}
 		}
 
 		$this->sendHtml($tpl, $binfo->title);
